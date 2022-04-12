@@ -18,6 +18,28 @@ module.exports.supplier_get = (req, res, next) => {
   // .select("-image");
 };
 
+module.exports.supplier_getSelectData = (req, res, next) => {
+  supplier
+    .find({}, (err, data) => {
+      if (err) {
+        res.status(400).send(err);
+        next();
+      } else {
+        const datas = data.map((item) => {
+          return {
+            title: item.name,
+            _id: item._id,
+          };
+        });
+        res.status(201).send(datas);
+      }
+    })
+    .sort({ createdAt: -1 })
+    .select("-image");
+  // .limit(2)
+  // .select("-image");
+};
+
 module.exports.supplier_post = (req, res, next) => {
   console.log(req.file);
   const obj = {

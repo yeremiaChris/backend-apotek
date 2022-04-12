@@ -5,6 +5,7 @@ const supplierController = require("../controller/supplierController");
 
 // medicine api
 router.get("/medicine", medicineController.medicine_get);
+router.get("/medicine/select-data", medicineController.medicine_get_selectData);
 router.get("/medicine/:id", medicineController.medicine_get_detail);
 router.post("/medicine", medicineController.medicine_post);
 router.delete("/medicine/:id", medicineController.medicine_delete);
@@ -12,6 +13,7 @@ router.put("/medicine/:id", medicineController.medicine_put);
 
 // supplier api
 router.get("/supplier", supplierController.supplier_get);
+router.get("/supplier/select-data", supplierController.supplier_getSelectData);
 router.get("/supplier/:id", supplierController.supplier_get_detail);
 // router.post("/supplier", supplierController.supplier_post);
 

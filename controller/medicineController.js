@@ -12,6 +12,26 @@ module.exports.medicine_get = (req, res, next) => {
     .sort({ createdAt: -1 });
 };
 
+module.exports.medicine_get_selectData = (req, res, next) => {
+  medicine
+    .find({}, (err, data) => {
+      if (err) {
+        res.status(400).send(err);
+        next();
+      } else {
+        console.log(data);
+        const datas = data.map((item) => {
+          return {
+            title: item.name,
+            _id: item._id,
+          };
+        });
+        res.status(201).send(datas);
+      }
+    })
+    .sort({ createdAt: -1 });
+};
+
 module.exports.medicine_post = (req, res, next) => {
   const { body } = req;
   medicine.create(body, (err, data) => {
