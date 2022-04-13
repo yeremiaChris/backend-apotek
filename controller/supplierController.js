@@ -76,10 +76,13 @@ module.exports.supplier_put = (req, res, next) => {
       defaultImage: !req.file ? "" : req.file.filename,
     },
   };
+
   const obj2 = {
     name: req.body.name,
   };
+
   const { id } = req.params;
+
   supplier.findByIdAndUpdate(
     id,
     !req.file ? obj2 : obj,
