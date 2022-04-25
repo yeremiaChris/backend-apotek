@@ -25,6 +25,7 @@ module.exports.medicine_get_selectData = (req, res, next) => {
           return {
             title: item.name,
             _id: item._id,
+            price: item.price,
           };
         });
         res.status(201).send(datas);
