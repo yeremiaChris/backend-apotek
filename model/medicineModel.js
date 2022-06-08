@@ -30,4 +30,4 @@ const medicineSchema = new Schema(
 autoIncrement.initialize(mongoose.connection);
 medicineSchema.plugin(autoIncrement.plugin, "medicine");
 const medicine = mongoose.model("medicine", medicineSchema);
-module.exports = medicine;
+module.exports = { medicine, medicineSchema };

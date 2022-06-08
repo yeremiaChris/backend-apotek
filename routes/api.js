@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const medicineController = require("../controller/medicineController");
 const supplierController = require("../controller/supplierController");
+const pembelianController = require("../controller/pembelianController");
 
 // medicine api
 router.get("/medicine", medicineController.medicine_get);
@@ -49,5 +50,13 @@ router.put(
 );
 
 router.get("/supplier/:id", supplierController.supplier_get_detail);
+
+// last uploading file
+
+// last supplier api
+
+// pembelian api
+router.get("/pembelian", pembelianController.pembelian_get);
+// router.post("/pembelian", pembelianController.pembelian_post);
 
 module.exports = router;

@@ -25,4 +25,4 @@ const supplierSchema = new Schema(
 autoIncrement.initialize(mongoose.connection);
 supplierSchema.plugin(autoIncrement.plugin, "supplier");
 const supplier = mongoose.model("supplier", supplierSchema);
-module.exports = supplier;
+module.exports = { supplier, supplierSchema };

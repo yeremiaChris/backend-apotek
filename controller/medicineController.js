@@ -1,4 +1,4 @@
-const medicine = require("../model/medicineModel");
+const { medicine } = require("../model/medicineModel");
 
 module.exports.medicine_get = (req, res, next) => {
   medicine
