@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const router = require("./routes/api");
-const bodyParser = require("body-parser");
+// const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const app = express();
@@ -26,13 +26,16 @@ mongoose
 
 app.use(cors());
 
-app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.urlencoded({ extended: false }));
 
 // app.use(
 //   express.urlencoded({
 //     extended: true,
 //   })
 // );
+
+app.use(express.json());
+app.use(express.urlencoded());
 
 // image url
 app.use(express.static(__dirname + "/public"));

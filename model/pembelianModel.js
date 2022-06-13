@@ -6,11 +6,9 @@ const autoIncrement = require("mongoose-auto-increment");
 const Schema = mongoose.Schema;
 const pembelianSchema = new Schema(
   {
-    supplier: {
-      any: Schema.Types.Mixed,
-    },
-    medicine: {
-      any: Schema.Types.Mixed,
+    laporan: [{}],
+    title: {
+      type: String,
     },
   },
   { timestamps: true }

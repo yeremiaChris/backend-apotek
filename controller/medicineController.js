@@ -36,6 +36,7 @@ module.exports.medicine_get_selectData = (req, res, next) => {
 
 module.exports.medicine_post = (req, res, next) => {
   const { body } = req;
+  console.log(req);
   medicine.create(body, (err, data) => {
     if (err) {
       res.status(400).send(err);
