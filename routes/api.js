@@ -3,6 +3,7 @@ const router = express.Router();
 const medicineController = require("../controller/medicineController");
 const supplierController = require("../controller/supplierController");
 const pembelianController = require("../controller/pembelianController");
+const penjualanController = require("../controller/penjualanController");
 
 // medicine api
 router.get("/medicine", medicineController.medicine_get);
@@ -35,19 +36,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.post(
-  "/supplier",
-  upload.single("image"),
-  supplierController.supplier_post
-);
+router.post("/supplier", upload.single("image"), supplierController.supplier_post);
 
 router.delete("/supplier/:id", supplierController.supplier_delete);
 
-router.put(
-  "/supplier/:id",
-  upload.single("image"),
-  supplierController.supplier_put
-);
+router.put("/supplier/:id", upload.single("image"), supplierController.supplier_put);
 
 router.get("/supplier/:id", supplierController.supplier_get_detail);
 
@@ -59,5 +52,7 @@ router.get("/supplier/:id", supplierController.supplier_get_detail);
 router.get("/pembelian", pembelianController.pembelian_get);
 router.post("/pembelian", pembelianController.pembelian_post);
 router.delete("/pembelian/:id", pembelianController.pembelian_delete);
+
+router.post("/penjualan", penjualanController.penjualan_post);
 
 module.exports = router;

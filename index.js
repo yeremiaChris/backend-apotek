@@ -1,7 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const router = require("./routes/api");
-// const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const app = express();
@@ -9,8 +8,7 @@ const app = express();
 app.use(cors());
 
 // db connection with mongodb
-const dbURI =
-  "mongodb+srv://penjualan-obat:pass789@cluster0.0r1il.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const dbURI = "mongodb+srv://penjualan-obat:pass789@cluster0.0r1il.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 mongoose
   .connect(dbURI, {
     useNewUrlParser: true,
@@ -24,24 +22,15 @@ mongoose
   })
   .catch((err) => console.log(err));
 
+// handle cors
 app.use(cors());
 
-// app.use(bodyParser.urlencoded({ extended: false }));
-
-// app.use(
-//   express.urlencoded({
-//     extended: true,
-//   })
-// );
-
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 
 // image url
 app.use(express.static(__dirname + "/public"));
 app.use("/uploads", express.static("uploads"));
-// app.use("/uploads", express.static("uploads"));
-// app.use("/uploads", express.static(__dirname + "/uploads"));
 
 // routing
 app.use("/api", router);
