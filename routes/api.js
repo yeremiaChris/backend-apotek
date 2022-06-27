@@ -7,6 +7,7 @@ const penjualanController = require("../controller/penjualanController");
 
 // medicine api
 router.get("/medicine", medicineController.medicine_get);
+router.get("/medicine/print", medicineController.medicine_print_get);
 router.get("/medicine/select-data", medicineController.medicine_get_selectData);
 router.get("/medicine/:id", medicineController.medicine_get_detail);
 router.post("/medicine", medicineController.medicine_post);
@@ -54,5 +55,7 @@ router.post("/pembelian", pembelianController.pembelian_post);
 router.delete("/pembelian/:id", pembelianController.pembelian_delete);
 
 router.post("/penjualan", penjualanController.penjualan_post);
+router.get("/penjualan", penjualanController.penjualan_get);
+router.delete("/penjualan/:id", penjualanController.penjualan_delete);
 
 module.exports = router;

@@ -1,16 +1,74 @@
 const { medicine } = require("../model/medicineModel");
 
-module.exports.medicine_get = (req, res, next) => {
-  medicine
-    .find({}, (err, data) => {
-      if (err) {
-        res.status(400).send(err);
-        next();
-      } else {
-        res.status(201).send(data);
-      }
-    })
-    .sort({ createdAt: -1 });
+module.exports.medicine_get = async (req, res, next) => {
+  const limit = 2;
+  const { page, query, sortBy } = req.query;
+
+  try {
+    const data = await medicine
+      .find({
+        name: {
+          $regex: !query ? "" : query,
+          $options: "i",
+        },
+      })
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .sort({ name: sortBy === "name" ? 1 : -1, price: sortBy === "price" ? 1 : -1, supply: sortBy === "supply" ? 1 : -1, createdAt: -1, updatedAt: -1 })
+      .exec();
+
+    const count = await medicine.countDocuments();
+
+    res.json({
+      data,
+      pagination: {
+        page: !page ? 1 : parseInt(page),
+        totalPage: Math.ceil(count / limit),
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+
+  // medicine
+  //   .find({}, (err, data) => {
+  //     if (err) {
+  //       res.status(400).send(err);
+  //       next();
+  //     } else {
+  //       console.log(data);
+  //       res.status(201).send({ pagination: { page,totalPage:  }, data });
+  //     }
+  //   })
+  //   .limit(limit)
+  //   .skip(limit * page - limit)
+  //   .sort({ createdAt: -1 });
+};
+
+module.exports.medicine_print_get = async (req, res, next) => {
+  const limit = 2;
+  const { page, query, sortBy } = req.query;
+
+  try {
+    const data = await medicine.find();
+    res.json(data);
+  } catch (error) {
+    console.log(error);
+  }
+
+  // medicine
+  //   .find({}, (err, data) => {
+  //     if (err) {
+  //       res.status(400).send(err);
+  //       next();
+  //     } else {
+  //       console.log(data);
+  //       res.status(201).send({ pagination: { page,totalPage:  }, data });
+  //     }
+  //   })
+  //   .limit(limit)
+  //   .skip(limit * page - limit)
+  //   .sort({ createdAt: -1 });
 };
 
 module.exports.medicine_get_selectData = (req, res, next) => {
