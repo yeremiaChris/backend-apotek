@@ -16,7 +16,7 @@ mongoose
   })
   .then((res) => {
     console.log("connect to db");
-    app.listen(4000, () => {
+    app.listen(27017, () => {
       console.log("ada di port 4000");
     });
   })

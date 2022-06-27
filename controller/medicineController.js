@@ -29,20 +29,6 @@ module.exports.medicine_get = async (req, res, next) => {
   } catch (error) {
     console.log(error);
   }
-
-  // medicine
-  //   .find({}, (err, data) => {
-  //     if (err) {
-  //       res.status(400).send(err);
-  //       next();
-  //     } else {
-  //       console.log(data);
-  //       res.status(201).send({ pagination: { page,totalPage:  }, data });
-  //     }
-  //   })
-  //   .limit(limit)
-  //   .skip(limit * page - limit)
-  //   .sort({ createdAt: -1 });
 };
 
 module.exports.medicine_print_get = async (req, res, next) => {
@@ -55,20 +41,6 @@ module.exports.medicine_print_get = async (req, res, next) => {
   } catch (error) {
     console.log(error);
   }
-
-  // medicine
-  //   .find({}, (err, data) => {
-  //     if (err) {
-  //       res.status(400).send(err);
-  //       next();
-  //     } else {
-  //       console.log(data);
-  //       res.status(201).send({ pagination: { page,totalPage:  }, data });
-  //     }
-  //   })
-  //   .limit(limit)
-  //   .skip(limit * page - limit)
-  //   .sort({ createdAt: -1 });
 };
 
 module.exports.medicine_get_selectData = (req, res, next) => {

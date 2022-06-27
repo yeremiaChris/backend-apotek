@@ -2,20 +2,61 @@ const { supplier } = require("../model/supplierModel");
 const fs = require("fs");
 const path = require("path");
 
-module.exports.supplier_get = (req, res, next) => {
-  supplier
-    .find({}, (err, data) => {
-      if (err) {
-        res.status(400).send(err);
-        next();
-      } else {
-        res.status(201).send(data);
-      }
-    })
-    .sort({ createdAt: -1 })
-    .select("-image");
+module.exports.supplier_get = async (req, res, next) => {
+  const limit = 2;
+  const { page, query, sortBy } = req.query;
+
+  try {
+    const data = await supplier
+      .find({
+        name: {
+          $regex: !query ? "" : query,
+          $options: "i",
+        },
+      })
+      .select("-image")
+      .limit(limit)
+      .sort({ name: sortBy === "name" ? 1 : -1, updatedAt: sortBy === "newest" ? 1 : -1 })
+      .skip((page - 1) * limit)
+      .exec();
+    console.log(data);
+    const count = await supplier.countDocuments();
+
+    res.json({
+      data,
+      pagination: {
+        page: !page ? 1 : parseInt(page),
+        totalPage: Math.ceil(count / limit),
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+  // supplier
+  //   .find({}, (err, data) => {
+  //     if (err) {
+  //       res.status(400).send(err);
+  //       next();
+  //     } else {
+  //       res.status(201).send(data);
+  //     }
+  //   })
+  //   .sort({ createdAt: -1 })
+  //   .select("-image");
   // .limit(2)
   // .select("-image");
+};
+
+module.exports.supplier_print_get = async (req, res, next) => {
+  const limit = 2;
+  const { page, query, sortBy } = req.query;
+
+  try {
+    const data = await supplier.find();
+    res.json(data);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 module.exports.supplier_getSelectData = (req, res, next) => {
@@ -65,11 +106,7 @@ module.exports.supplier_put = (req, res, next) => {
   const obj = {
     name: req.body.name,
     image: {
-      data: !req.file
-        ? ""
-        : fs.readFileSync(
-            path.join(process.cwd() + "/uploads/" + req.file.filename)
-          ),
+      data: !req.file ? "" : fs.readFileSync(path.join(process.cwd() + "/uploads/" + req.file.filename)),
       contentType: "image/png",
     },
     media: {
@@ -83,18 +120,13 @@ module.exports.supplier_put = (req, res, next) => {
 
   const { id } = req.params;
 
-  supplier.findByIdAndUpdate(
-    id,
-    !req.file ? obj2 : obj,
-    { new: true },
-    (err, data) => {
-      if (err) {
-        res.status(400).send(err);
-        next();
-      }
-      res.status(201).send(data);
+  supplier.findByIdAndUpdate(id, !req.file ? obj2 : obj, { new: true }, (err, data) => {
+    if (err) {
+      res.status(400).send(err);
+      next();
     }
-  );
+    res.status(201).send(data);
+  });
 };
 
 module.exports.supplier_delete = (req, res, next) => {

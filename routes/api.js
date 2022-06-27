@@ -37,6 +37,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+router.get("/supplier/print", supplierController.supplier_print_get);
+
 router.post("/supplier", upload.single("image"), supplierController.supplier_post);
 
 router.delete("/supplier/:id", supplierController.supplier_delete);
