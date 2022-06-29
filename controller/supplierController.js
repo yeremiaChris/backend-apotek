@@ -48,11 +48,8 @@ module.exports.supplier_get = async (req, res, next) => {
 };
 
 module.exports.supplier_print_get = async (req, res, next) => {
-  const limit = 2;
-  const { page, query, sortBy } = req.query;
-
   try {
-    const data = await supplier.find();
+    const data = await supplier.find().select("-image");
     res.json(data);
   } catch (error) {
     console.log(error);

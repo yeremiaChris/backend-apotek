@@ -10,6 +10,15 @@ const pembelianSchema = new Schema(
     title: {
       type: String,
     },
+    uangBayar: {
+      type: Number,
+    },
+    total: {
+      type: Number,
+    },
+    kembalian: {
+      type: Number,
+    },
   },
   { timestamps: true }
 );

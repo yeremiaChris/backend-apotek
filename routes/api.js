@@ -16,6 +16,7 @@ router.put("/medicine/:id", medicineController.medicine_put);
 
 // supplier api
 router.get("/supplier", supplierController.supplier_get);
+router.get("/supplier/print", supplierController.supplier_print_get);
 router.get("/supplier/select-data", supplierController.supplier_getSelectData);
 router.get("/supplier/:id", supplierController.supplier_get_detail);
 // router.post("/supplier", supplierController.supplier_post);
@@ -36,8 +37,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-
-router.get("/supplier/print", supplierController.supplier_print_get);
 
 router.post("/supplier", upload.single("image"), supplierController.supplier_post);
 
