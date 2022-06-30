@@ -56,6 +56,7 @@ module.exports.medicine_get_selectData = (req, res, next) => {
             title: item.name,
             _id: item._id,
             price: item.price,
+            supply: item.supply,
           };
         });
         res.status(201).send(datas);
