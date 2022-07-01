@@ -1,21 +1,20 @@
 const penjualan = require("../model/penjualan");
 const { medicine } = require("../model/medicine");
-
+const dayjs = require("dayjs");
 module.exports.penjualan_get = async (req, res, next) => {
-  const limit = 2;
-  const { page, query, sortBy } = req.query;
-
+  const limit = 5;
+  const { page, query } = req.query;
+  console.log(query);
   try {
     const data = await penjualan
       .find({
-        name: {
+        title: {
           $regex: !query ? "" : query,
           $options: "i",
         },
       })
       .limit(limit)
       .skip((page - 1) * limit)
-      .sort({ name: sortBy === "name" ? 1 : -1, price: sortBy === "price" ? 1 : -1, supply: sortBy === "supply" ? 1 : -1, createdAt: -1, updatedAt: -1 })
       .exec();
 
     const count = await penjualan.countDocuments();
@@ -73,4 +72,43 @@ module.exports.penjualan_delete = (req, res, next) => {
       next();
     }
   });
+};
+
+module.exports.penjualan_newest = async (req, res, next) => {
+  const limit = 5;
+  const { page, query } = req.query;
+  console.log(query);
+  try {
+    const data = await penjualan
+      .find({
+        title: {
+          $regex: !query ? "" : query,
+          $options: "i",
+        },
+        createdAt: {
+          $gte: dayjs(),
+          $lt: dayjs(),
+        },
+      })
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .exec();
+
+    const count = await penjualan.countDocuments({
+      createdAt: {
+        $gte: dayjs(),
+        $lt: dayjs(),
+      },
+    });
+
+    res.json({
+      data,
+      pagination: {
+        page: !page ? 1 : parseInt(page),
+        totalPage: count === 0 ? 1 : Math.ceil(count / limit),
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };

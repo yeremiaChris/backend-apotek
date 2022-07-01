@@ -3,19 +3,18 @@ const { medicine } = require("../model/medicine");
 
 module.exports.pembelian_get = async (req, res, next) => {
   const limit = 2;
-  const { page, query, sortBy } = req.query;
+  const { page, query } = req.query;
 
   try {
     const data = await pembelian
       .find({
-        name: {
+        title: {
           $regex: !query ? "" : query,
           $options: "i",
         },
       })
       .limit(limit)
       .skip((page - 1) * limit)
-      .sort({ name: sortBy === "name" ? 1 : -1, price: sortBy === "price" ? 1 : -1, supply: sortBy === "supply" ? 1 : -1, createdAt: -1, updatedAt: -1 })
       .exec();
 
     const count = await pembelian.countDocuments();
