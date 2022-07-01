@@ -1,16 +1,22 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const router = require("./routes/api");
+const dotenv = require("dotenv");
+const supplierRoute = require("./routes/supplier");
+const medicineRoute = require("./routes/medicine");
+const pembelianRoute = require("./routes/pembelian");
+const penjualanRoute = require("./routes/penjualan");
+const authRoute = require("./routes/auth");
 const cors = require("cors");
 
 const app = express();
 
 app.use(cors());
 
+dotenv.config();
 // db connection with mongodb
-const dbURI = "mongodb+srv://penjualan-obat:pass789@cluster0.0r1il.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const dbURI = "";
 mongoose
-  .connect(dbURI, {
+  .connect(process.env.DB_CONNECT, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -25,6 +31,7 @@ mongoose
 // handle cors
 app.use(cors());
 
+// body parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -33,7 +40,11 @@ app.use(express.static(__dirname + "/public"));
 app.use("/uploads", express.static("uploads"));
 
 // routing
-app.use("/api", router);
+app.use("/api", supplierRoute);
+app.use("/api", medicineRoute);
+app.use("/api", pembelianRoute);
+app.use("/api", penjualanRoute);
+app.use("/api/auth", authRoute);
 
 // handle error
 app.use((err, req, res, next) => {

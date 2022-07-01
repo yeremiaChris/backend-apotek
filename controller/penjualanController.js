@@ -1,17 +1,35 @@
-const penjualan = require("../model/penjualanModel");
-const { medicine } = require("../model/medicineModel");
+const penjualan = require("../model/penjualan");
+const { medicine } = require("../model/medicine");
 
-module.exports.penjualan_get = (req, res, next) => {
-  penjualan
-    .find({}, (err, data) => {
-      if (err) {
-        res.status(400).send(err);
-        next();
-      } else {
-        res.status(201).send(data);
-      }
-    })
-    .sort({ createdAt: -1 });
+module.exports.penjualan_get = async (req, res, next) => {
+  const limit = 2;
+  const { page, query, sortBy } = req.query;
+
+  try {
+    const data = await penjualan
+      .find({
+        name: {
+          $regex: !query ? "" : query,
+          $options: "i",
+        },
+      })
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .sort({ name: sortBy === "name" ? 1 : -1, price: sortBy === "price" ? 1 : -1, supply: sortBy === "supply" ? 1 : -1, createdAt: -1, updatedAt: -1 })
+      .exec();
+
+    const count = await penjualan.countDocuments();
+
+    res.json({
+      data,
+      pagination: {
+        page: !page ? 1 : parseInt(page),
+        totalPage: Math.ceil(count / limit),
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 module.exports.penjualan_post = (req, res, next) => {

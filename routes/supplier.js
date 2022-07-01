@@ -1,18 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const medicineController = require("../controller/medicineController");
 const supplierController = require("../controller/supplierController");
-const pembelianController = require("../controller/pembelianController");
-const penjualanController = require("../controller/penjualanController");
-
-// medicine api
-router.get("/medicine", medicineController.medicine_get);
-router.get("/medicine/print", medicineController.medicine_print_get);
-router.get("/medicine/select-data", medicineController.medicine_get_selectData);
-router.get("/medicine/:id", medicineController.medicine_get_detail);
-router.post("/medicine", medicineController.medicine_post);
-router.delete("/medicine/:id", medicineController.medicine_delete);
-router.put("/medicine/:id", medicineController.medicine_put);
 
 // supplier api
 router.get("/supplier", supplierController.supplier_get);
@@ -47,16 +35,5 @@ router.put("/supplier/:id", upload.single("image"), supplierController.supplier_
 router.get("/supplier/:id", supplierController.supplier_get_detail);
 
 // last uploading file
-
-// last supplier api
-
-// pembelian api
-router.get("/pembelian", pembelianController.pembelian_get);
-router.post("/pembelian", pembelianController.pembelian_post);
-router.delete("/pembelian/:id", pembelianController.pembelian_delete);
-
-router.post("/penjualan", penjualanController.penjualan_post);
-router.get("/penjualan", penjualanController.penjualan_get);
-router.delete("/penjualan/:id", penjualanController.penjualan_delete);
 
 module.exports = router;

@@ -1,4 +1,4 @@
-const { medicine } = require("../model/medicineModel");
+const { medicine } = require("../model/medicine");
 
 module.exports.medicine_get = async (req, res, next) => {
   const limit = 2;
