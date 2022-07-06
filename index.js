@@ -5,8 +5,9 @@ const supplierRoute = require("./routes/supplier");
 const medicineRoute = require("./routes/medicine");
 const pembelianRoute = require("./routes/pembelian");
 const penjualanRoute = require("./routes/penjualan");
-const authRoute = require("./routes/auth");
+// const authRoute = require("./routes/auth");
 const cors = require("cors");
+const authenticateUser = require("./helper/authenticateToken");
 
 const app = express();
 
@@ -35,6 +36,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// route for auth
+// app.use("/api/auth", authRoute);
+
+// authenticate user login
+app.use(authenticateUser);
+
 // image url
 app.use(express.static(__dirname + "/public"));
 app.use("/uploads", express.static("uploads"));
@@ -44,7 +51,6 @@ app.use("/api", supplierRoute);
 app.use("/api", medicineRoute);
 app.use("/api", pembelianRoute);
 app.use("/api", penjualanRoute);
-app.use("/api/auth", authRoute);
 
 // handle error
 app.use((err, req, res, next) => {
