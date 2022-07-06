@@ -5,7 +5,7 @@ const supplierRoute = require("./routes/supplier");
 const medicineRoute = require("./routes/medicine");
 const pembelianRoute = require("./routes/pembelian");
 const penjualanRoute = require("./routes/penjualan");
-// const authRoute = require("./routes/auth");
+const authRoute = require("./routes/auth");
 const cors = require("cors");
 const authenticateUser = require("./helper/authenticateToken");
 
@@ -37,7 +37,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // route for auth
-// app.use("/api/auth", authRoute);
+app.use("/api/auth", authRoute);
 
 // authenticate user login
 app.use(authenticateUser);
