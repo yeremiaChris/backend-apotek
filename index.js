@@ -32,25 +32,24 @@ mongoose
 // handle cors
 app.use(cors());
 
-// route for auth
-app.use("/api/auth", authRoute);
-
-// authenticate user login
-app.use(authenticateUser);
-
 // body parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// route for auth
+app.use("/api/auth", authRoute);
 // image url
 app.use(express.static(__dirname + "/public"));
 app.use("/uploads", express.static("uploads"));
 
+// authenticate user login
+app.use(authenticateUser);
+
 // routing
-app.use("/api", supplierRoute);
-app.use("/api", medicineRoute);
-app.use("/api", pembelianRoute);
-app.use("/api", penjualanRoute);
+app.use("/api/supplier", supplierRoute);
+app.use("/api/medicine", medicineRoute);
+app.use("/api/pembelian", pembelianRoute);
+app.use("/api/penjualan", penjualanRoute);
 
 // handle error
 app.use((err, req, res, next) => {

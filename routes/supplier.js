@@ -3,10 +3,10 @@ const router = express.Router();
 const supplierController = require("../controller/supplierController");
 
 // supplier api
-router.get("/supplier", supplierController.supplier_get);
-router.get("/supplier/print", supplierController.supplier_print_get);
-router.get("/supplier/select-data", supplierController.supplier_getSelectData);
-router.get("/supplier/:id", supplierController.supplier_get_detail);
+router.get("/", supplierController.supplier_get);
+router.get("/print", supplierController.supplier_print_get);
+router.get("/select-data", supplierController.supplier_getSelectData);
+router.get("/:id", supplierController.supplier_get_detail);
 // router.post("/supplier", supplierController.supplier_post);
 
 // uploading files
@@ -26,13 +26,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.post("/supplier", upload.single("image"), supplierController.supplier_post);
+router.post("/", upload.single("image"), supplierController.supplier_post);
 
-router.delete("/supplier/:id", supplierController.supplier_delete);
+router.delete("/:id", supplierController.supplier_delete);
 
-router.put("/supplier/:id", upload.single("image"), supplierController.supplier_put);
+router.put("/:id", upload.single("image"), supplierController.supplier_put);
 
-router.get("/supplier/:id", supplierController.supplier_get_detail);
+router.get("/:id", supplierController.supplier_get_detail);
 
 // last uploading file
 

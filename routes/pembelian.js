@@ -3,8 +3,8 @@ const router = express.Router();
 const pembelianController = require("../controller/pembelianController");
 
 // pembelian api
-router.get("/pembelian", pembelianController.pembelian_get);
-router.post("/pembelian", pembelianController.pembelian_post);
-router.delete("/pembelian/:id", pembelianController.pembelian_delete);
+router.get("/", pembelianController.pembelian_get);
+router.post("/", pembelianController.pembelian_post);
+router.delete("/:id", pembelianController.pembelian_delete);
 
 module.exports = router;
