@@ -1,7 +1,7 @@
 const { medicine } = require("../model/medicine");
 
 module.exports.medicine_get = async (req, res, next) => {
-  const limit = 2;
+  const limit = 5;
   const { page, query, sortBy } = req.query;
 
   try {
@@ -21,7 +21,7 @@ module.exports.medicine_get = async (req, res, next) => {
         createdAt: -1,
         updatedAt: -1,
       })
-      .exec();
+      .lean();
 
     const count = await medicine.countDocuments();
 
@@ -42,7 +42,7 @@ module.exports.medicine_print_get = async (req, res, next) => {
   const { page, query, sortBy } = req.query;
 
   try {
-    const data = await medicine.find();
+    const data = await medicine.find().lean();
     res.json(data);
   } catch (error) {
     next();
@@ -68,19 +68,22 @@ module.exports.medicine_get_selectData = (req, res, next) => {
         res.status(201).send(datas);
       }
     })
-    .sort({ createdAt: -1 });
+    .sort({ createdAt: -1 })
+    .lean();
 };
 
 module.exports.medicine_post = (req, res, next) => {
   const { body } = req;
   console.log(req);
-  medicine.create(body, (err, data) => {
-    if (err) {
-      res.status(400).send(err);
-      next();
-    }
-    res.status(201).send(data);
-  });
+  medicine
+    .create(body, (err, data) => {
+      if (err) {
+        res.status(400).send(err);
+        next();
+      }
+      res.status(201).send(data);
+    })
+    .lean();
 };
 
 module.exports.medicine_put = (req, res, next) => {
@@ -114,15 +117,17 @@ module.exports.medicine_delete = (req, res, next) => {
 
 module.exports.medicine_get_detail = (req, res, next) => {
   const { id } = req.params;
-  medicine.findById(id, (err, data) => {
-    if (err) {
-      res.status(400).send(err);
-      next();
-    } else if (data) {
-      res.status(201).send(data);
-    } else {
-      res.status(400).send("Not found");
-      next();
-    }
-  });
+  medicine
+    .findById(id, (err, data) => {
+      if (err) {
+        res.status(400).send(err);
+        next();
+      } else if (data) {
+        res.status(201).send(data);
+      } else {
+        res.status(400).send("Not found");
+        next();
+      }
+    })
+    .lean();
 };

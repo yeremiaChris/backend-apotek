@@ -5,10 +5,10 @@ const penjualan = require("../model/penjualan");
 
 module.exports.get_total = async (req, res, next) => {
   try {
-    const medicineData = await medicine.countDocuments({}).exec();
-    const supplierData = await supplier.countDocuments({}).exec();
-    const pembelianData = await pembelian.countDocuments({}).exec();
-    const penjualanData = await penjualan.countDocuments({}).exec();
+    const medicineData = await medicine.countDocuments({}).lean();
+    const supplierData = await supplier.countDocuments({}).lean();
+    const pembelianData = await pembelian.countDocuments({}).lean();
+    const penjualanData = await penjualan.countDocuments({}).lean();
     const data = [
       { title: "Obat", isHover: false, url: "/obat/list", total: medicineData },
       { title: "Supplier", isHover: false, url: "/supplier/list", total: supplierData },

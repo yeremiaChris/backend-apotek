@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 module.exports.supplier_get = async (req, res, next) => {
-  const limit = 2;
+  const limit = 5;
   const { page, query, sortBy } = req.query;
 
   try {
@@ -18,9 +18,8 @@ module.exports.supplier_get = async (req, res, next) => {
       .limit(limit)
       .sort({ name: sortBy === "name" ? 1 : -1, updatedAt: sortBy === "newest" ? 1 : -1 })
       .skip((page - 1) * limit)
-      .exec();
-    console.log(data);
-    const count = await supplier.countDocuments();
+      .lean();
+    const count = await supplier.countDocuments().lean();
 
     res.json({
       data,
@@ -32,24 +31,11 @@ module.exports.supplier_get = async (req, res, next) => {
   } catch (error) {
     console.log(error);
   }
-  // supplier
-  //   .find({}, (err, data) => {
-  //     if (err) {
-  //       res.status(400).send(err);
-  //       next();
-  //     } else {
-  //       res.status(201).send(data);
-  //     }
-  //   })
-  //   .sort({ createdAt: -1 })
-  //   .select("-image");
-  // .limit(2)
-  // .select("-image");
 };
 
 module.exports.supplier_print_get = async (req, res, next) => {
   try {
-    const data = await supplier.find().select("-image");
+    const data = await supplier.find().select("-image").lean();
     res.json(data);
   } catch (error) {
     console.log(error);
@@ -73,7 +59,8 @@ module.exports.supplier_getSelectData = (req, res, next) => {
       }
     })
     .sort({ createdAt: -1 })
-    .select("-image");
+    .select("-image")
+    .lean();
   // .limit(2)
   // .select("-image");
 };
@@ -103,7 +90,9 @@ module.exports.supplier_put = (req, res, next) => {
   const obj = {
     name: req.body.name,
     image: {
-      data: !req.file ? "" : fs.readFileSync(path.join(process.cwd() + "/uploads/" + req.file.filename)),
+      data: !req.file
+        ? ""
+        : fs.readFileSync(path.join(process.cwd() + "/uploads/" + req.file.filename)),
       contentType: "image/png",
     },
     media: {
@@ -145,15 +134,17 @@ module.exports.supplier_delete = (req, res, next) => {
 
 module.exports.supplier_get_detail = (req, res, next) => {
   const { id } = req.params;
-  supplier.findById(id, (err, data) => {
-    if (err) {
-      res.status(400).send(err);
-      next();
-    } else if (data) {
-      res.status(201).send(data);
-    } else {
-      res.status(400).send("Not found");
-      next();
-    }
-  });
+  supplier
+    .findById(id, (err, data) => {
+      if (err) {
+        res.status(400).send(err);
+        next();
+      } else if (data) {
+        res.status(201).send(data);
+      } else {
+        res.status(400).send("Not found");
+        next();
+      }
+    })
+    .lean();
 };

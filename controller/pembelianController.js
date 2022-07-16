@@ -2,7 +2,7 @@ const pembelian = require("../model/pembelian");
 const { medicine } = require("../model/medicine");
 
 module.exports.pembelian_get = async (req, res, next) => {
-  const limit = 2;
+  const limit = 5;
   const { page, query } = req.query;
 
   try {
@@ -15,9 +15,9 @@ module.exports.pembelian_get = async (req, res, next) => {
       })
       .limit(limit)
       .skip((page - 1) * limit)
-      .exec();
+      .lean();
 
-    const count = await pembelian.countDocuments();
+    const count = await pembelian.countDocuments().lean();
 
     res.json({
       data,
@@ -47,12 +47,17 @@ module.exports.pembelian_post = (req, res, next) => {
 
     // add supply for transaction
     for (let index = 0; index < data.laporan.length; index++) {
-      medicine.findByIdAndUpdate({ _id: data.laporan[index]._id }, { $inc: { supply: parseInt(data.laporan[index].jumlahBeli) } }, { new: true }, (err1, data1) => {
-        if (err) {
-          console.log(err1);
+      medicine.findByIdAndUpdate(
+        { _id: data.laporan[index]._id },
+        { $inc: { supply: parseInt(data.laporan[index].jumlahBeli) } },
+        { new: true },
+        (err1, data1) => {
+          if (err) {
+            console.log(err1);
+          }
+          console.log(data1);
         }
-        console.log(data1);
-      });
+      );
     }
   });
 };

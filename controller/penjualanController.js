@@ -15,7 +15,8 @@ module.exports.penjualan_get = async (req, res, next) => {
       })
       .limit(limit)
       .skip((page - 1) * limit)
-      .exec();
+      .sort({ createdAt: -1 })
+      .lean();
 
     const count = await penjualan.countDocuments();
 
@@ -47,12 +48,17 @@ module.exports.penjualan_post = (req, res, next) => {
 
     // add supply for transaction
     for (let index = 0; index < data.laporan.length; index++) {
-      medicine.findByIdAndUpdate({ _id: data.laporan[index]._id }, { $inc: { supply: -parseInt(data.laporan[index].jumlahBeli) } }, { new: true }, (err1, data1) => {
-        if (err) {
-          console.log(err1);
+      medicine.findByIdAndUpdate(
+        { _id: data.laporan[index]._id },
+        { $inc: { supply: -parseInt(data.laporan[index].jumlahBeli) } },
+        { new: true },
+        (err1, data1) => {
+          if (err) {
+            console.log(err1);
+          }
+          console.log(data1);
         }
-        console.log(data1);
-      });
+      );
     }
   });
 };
@@ -92,7 +98,7 @@ module.exports.penjualan_newest = async (req, res, next) => {
       })
       .limit(limit)
       .skip((page - 1) * limit)
-      .exec();
+      .lean();
 
     const count = await penjualan.countDocuments({
       createdAt: {
