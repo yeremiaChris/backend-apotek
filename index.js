@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const supplierRoute = require("./routes/supplier");
+const infoRoute = require("./routes/info");
 const medicineRoute = require("./routes/medicine");
 const pembelianRoute = require("./routes/pembelian");
 const penjualanRoute = require("./routes/penjualan");
@@ -46,6 +47,7 @@ app.use("/uploads", express.static("uploads"));
 app.use(authenticateUser);
 
 // routing
+app.use("/api", infoRoute);
 app.use("/api/supplier", supplierRoute);
 app.use("/api/medicine", medicineRoute);
 app.use("/api/pembelian", pembelianRoute);
@@ -53,6 +55,5 @@ app.use("/api/penjualan", penjualanRoute);
 
 // handle error
 app.use((err, req, res, next) => {
-  console.log(err);
   res.status(404).send({ error: err.message });
 });

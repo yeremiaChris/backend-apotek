@@ -14,7 +14,13 @@ module.exports.medicine_get = async (req, res, next) => {
       })
       .limit(limit)
       .skip((page - 1) * limit)
-      .sort({ name: sortBy === "name" ? 1 : -1, price: sortBy === "price" ? 1 : -1, supply: sortBy === "supply" ? 1 : -1, createdAt: -1, updatedAt: -1 })
+      .sort({
+        name: sortBy === "name" ? 1 : -1,
+        price: sortBy === "price" ? 1 : -1,
+        supply: sortBy === "supply" ? 1 : -1,
+        createdAt: -1,
+        updatedAt: -1,
+      })
       .exec();
 
     const count = await medicine.countDocuments();
@@ -27,7 +33,7 @@ module.exports.medicine_get = async (req, res, next) => {
       },
     });
   } catch (error) {
-    console.log(error);
+    next();
   }
 };
 
@@ -39,7 +45,7 @@ module.exports.medicine_print_get = async (req, res, next) => {
     const data = await medicine.find();
     res.json(data);
   } catch (error) {
-    console.log(error);
+    next();
   }
 };
 
