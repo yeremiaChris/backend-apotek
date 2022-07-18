@@ -12,7 +12,8 @@ const authenticateUser = require("./helper/authenticateToken");
 
 const app = express();
 
-app.use(cors());
+// to access api with free wifi we have to put the credential and the origin to true
+app.use(cors({ credentials: true, origin: true }));
 
 dotenv.config();
 // db connection with mongodb

@@ -15,6 +15,7 @@ module.exports.pembelian_get = async (req, res, next) => {
       })
       .limit(limit)
       .skip((page - 1) * limit)
+      .sort({ createdAt: -1 })
       .lean();
 
     const count = await pembelian.countDocuments().lean();
