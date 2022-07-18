@@ -1,9 +1,15 @@
 const mongoose = require("mongoose");
-const autoIncrement = require("mongoose-auto-increment");
+// const autoIncrement = require("mongoose-auto-increment");
 
 const Schema = mongoose.Schema;
 const medicineSchema = new Schema(
   {
+    kode: {
+      type: String,
+      min: 5,
+      max: 5,
+      // unique: true,
+    },
     name: {
       type: String,
       required: [true, "Name field is required"],
@@ -27,7 +33,7 @@ const medicineSchema = new Schema(
   },
   { timestamps: true }
 );
-autoIncrement.initialize(mongoose.connection);
-medicineSchema.plugin(autoIncrement.plugin, "medicine");
+// autoIncrement.initialize(mongoose.connection);
+// medicineSchema.plugin(autoIncrement.plugin, "medicine");
 const medicine = mongoose.model("medicine", medicineSchema);
 module.exports = { medicine, medicineSchema };
