@@ -16,11 +16,10 @@ module.exports.medicine_get = async (req, res, next) => {
       .limit(limit)
       .skip((page - 1) * limit)
       .sort({
+        createdAt: -1,
         name: sortBy === "name" ? 1 : -1,
         price: sortBy === "price" ? 1 : -1,
         supply: sortBy === "supply" ? 1 : -1,
-        createdAt: -1,
-        updatedAt: -1,
       })
       .lean();
 

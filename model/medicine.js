@@ -22,7 +22,11 @@ const medicineSchema = new Schema(
       type: String,
       required: [true, "Unit field is required"],
     },
-    price: {
+    purchasePrice: {
+      type: Number,
+      required: [true, "Price field is required"],
+    },
+    sellingPrice: {
       type: Number,
       required: [true, "Price field is required"],
     },
