@@ -4,6 +4,7 @@ const pembelianController = require("../controller/pembelianController");
 
 // pembelian api
 router.get("/", pembelianController.pembelian_get);
+router.get("/print", pembelianController.pembelian_print_get);
 router.post("/", pembelianController.pembelian_post);
 router.delete("/:id", pembelianController.pembelian_delete);
 

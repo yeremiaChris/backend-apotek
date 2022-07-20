@@ -38,9 +38,6 @@ module.exports.medicine_get = async (req, res, next) => {
 };
 
 module.exports.medicine_print_get = async (req, res, next) => {
-  const limit = 2;
-  const { page, query, sortBy } = req.query;
-
   try {
     const data = await medicine.find().lean();
     res.json(data);

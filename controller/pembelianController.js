@@ -32,6 +32,15 @@ module.exports.pembelian_get = async (req, res, next) => {
   }
 };
 
+module.exports.pembelian_print_get = async (req, res, next) => {
+  try {
+    const data = await pembelian.find().lean();
+    res.json(data);
+  } catch (error) {
+    next();
+  }
+};
+
 module.exports.pembelian_post = (req, res, next) => {
   const { body } = req;
   console.log(body);

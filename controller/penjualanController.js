@@ -32,6 +32,15 @@ module.exports.penjualan_get = async (req, res, next) => {
   }
 };
 
+module.exports.penjualan_print_get = async (req, res, next) => {
+  try {
+    const data = await penjualan.find().lean();
+    res.json(data);
+  } catch (error) {
+    next();
+  }
+};
+
 module.exports.penjualan_post = (req, res, next) => {
   const { body } = req;
   console.log(body);
