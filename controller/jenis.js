@@ -3,14 +3,11 @@ const { jenis } = require("../model/jenis");
 module.exports.jenis_get = async (req, res, next) => {
   const limit = 5;
   const { page, query, sortBy } = req.query;
-
+  console.log(sortBy);
   try {
     const data = await jenis
       .find({
-        title: {
-          $regex: !query ? "" : query,
-          $options: "i",
-        },
+        $or: [{ title: { $regex: query || "" } }, { description: { $regex: query || "" } }],
       })
       .limit(limit)
       .skip((page - 1) * limit)
@@ -28,6 +25,28 @@ module.exports.jenis_get = async (req, res, next) => {
   } catch (error) {
     next();
   }
+};
+
+module.exports.jenis_get_selectData = (req, res, next) => {
+  jenis
+    .find({}, (err, data) => {
+      if (err) {
+        res.status(400).send(err);
+        next();
+      } else {
+        console.log(data);
+        const datas = data.map((item) => {
+          return {
+            title: item.title,
+            description: item.description,
+            _id: item._id,
+          };
+        });
+        res.status(201).send(datas);
+      }
+    })
+    .sort({ createdAt: -1 })
+    .lean();
 };
 
 module.exports.jenis_post = (req, res, next) => {

@@ -1,30 +1,19 @@
-const { medicine } = require("../model/medicine");
-const Crypto = require("crypto");
+const { satuan } = require("../model/satuan");
 
-module.exports.medicine_get = async (req, res, next) => {
+module.exports.satuan_get = async (req, res, next) => {
   const limit = 5;
   const { page, query, sortBy } = req.query;
-
+  console.log(sortBy);
   try {
-    // const data = await medicine
-    //   .find({
-    //     name: {
-    //       $regex: !query ? "" : query,
-    //       $options: "i",
-    //     },
-    //   })
-    const data = await medicine
+    const data = await satuan
       .find({
-        $or: [{ name: { $regex: query || "" } }, { kode: { $regex: query || "" } }],
-      })
-      .sort({
-        [sortBy]: sortBy === "name" ? 1 : -1,
+        $or: [{ title: { $regex: query || "" } }, { description: { $regex: query || "" } }],
       })
       .limit(limit)
       .skip((page - 1) * limit)
       .lean();
 
-    const count = await medicine.countDocuments();
+    const count = await satuan.countDocuments();
 
     res.json({
       data,
@@ -38,17 +27,8 @@ module.exports.medicine_get = async (req, res, next) => {
   }
 };
 
-module.exports.medicine_print_get = async (req, res, next) => {
-  try {
-    const data = await medicine.find().lean();
-    res.json(data);
-  } catch (error) {
-    next();
-  }
-};
-
-module.exports.medicine_get_selectData = (req, res, next) => {
-  medicine
+module.exports.satuan_get_selectData = (req, res, next) => {
+  satuan
     .find({}, (err, data) => {
       if (err) {
         res.status(400).send(err);
@@ -57,10 +37,9 @@ module.exports.medicine_get_selectData = (req, res, next) => {
         console.log(data);
         const datas = data.map((item) => {
           return {
-            title: item.name,
+            title: item.title,
+            description: item.description,
             _id: item._id,
-            price: item.price,
-            supply: item.supply,
           };
         });
         res.status(201).send(datas);
@@ -70,14 +49,10 @@ module.exports.medicine_get_selectData = (req, res, next) => {
     .lean();
 };
 
-function randomString(size = 5) {
-  return Crypto.randomBytes(size).toString("base64").slice(0, size);
-}
-
-module.exports.medicine_post = (req, res, next) => {
+module.exports.satuan_post = (req, res, next) => {
   const { body } = req;
   console.log(req);
-  medicine.create({ ...body, kode: randomString().toUpperCase() }, (err, data) => {
+  satuan.create(body, (err, data) => {
     if (err) {
       res.status(400).send(err);
       next();
@@ -86,10 +61,10 @@ module.exports.medicine_post = (req, res, next) => {
   });
 };
 
-module.exports.medicine_put = (req, res, next) => {
+module.exports.satuan_put = (req, res, next) => {
   const { body } = req;
   const { id } = req.params;
-  medicine.findByIdAndUpdate(id, body, { new: true }, (err, data) => {
+  satuan.findByIdAndUpdate(id, body, { new: true }, (err, data) => {
     if (err) {
       res.status(400).send(err);
       next();
@@ -98,9 +73,9 @@ module.exports.medicine_put = (req, res, next) => {
   });
 };
 
-module.exports.medicine_delete = (req, res, next) => {
+module.exports.satuan_delete = (req, res, next) => {
   const { id } = req.params;
-  medicine.findById(id, (err, data) => {
+  satuan.findById(id, (err, data) => {
     if (err) {
       res.status(400).send(err);
       next();
@@ -115,9 +90,9 @@ module.exports.medicine_delete = (req, res, next) => {
   });
 };
 
-module.exports.medicine_get_detail = (req, res, next) => {
+module.exports.satuan_get_detail = (req, res, next) => {
   const { id } = req.params;
-  medicine
+  satuan
     .findById(id, (err, data) => {
       if (err) {
         res.status(400).send(err);
