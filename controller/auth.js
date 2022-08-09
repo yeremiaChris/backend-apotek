@@ -65,14 +65,21 @@ module.exports.register_post = async (req, res, next) => {
   const hashedPassword = await bcrypt.hash(password, salt);
 
   // create user
-  const roleValue = await role.findById(parseInt(body.role));
-  user.create({ ...body, role: roleValue, refreshToken, password: hashedPassword }, (err, data) => {
-    if (err) {
-      res.status(400).send(err);
-      next();
-    }
-    res.status(201).json(data);
-  });
+  if (!body.role) {
+    res.status(400).send({ message: "Role field is required" });
+  } else {
+    const roleValue = await role.findById(parseInt(body.role));
+    user.create(
+      { ...body, role: roleValue, refreshToken, password: hashedPassword },
+      (err, data) => {
+        if (err) {
+          res.status(400).send(err);
+          next();
+        }
+        res.status(201).json(data);
+      }
+    );
+  }
 };
 
 // module.exports.user_put = (req, res, next) => {
@@ -111,24 +118,29 @@ module.exports.register_put = async (req, res, next) => {
   const { password } = body;
 
   // create user
-  const roleValue = await role.findById(parseInt(body.role));
+
   if (password) {
-    const refreshToken = jwt.sign(body, process.env.REFRESH_TOKEN_SECRET);
-    // hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    user.findByIdAndUpdate(
-      id,
-      { ...body, role: roleValue, refreshToken, password: hashedPassword },
-      { new: true },
-      (err, data) => {
-        if (err) {
-          res.status(400).send(err);
-          next();
+    if (!body.role) {
+      res.status(400).send({ message: "Role field is required" });
+    } else {
+      const roleValue = await role.findById(parseInt(body.role));
+      const refreshToken = jwt.sign(body, process.env.REFRESH_TOKEN_SECRET);
+      // hash password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      user.findByIdAndUpdate(
+        id,
+        { ...body, role: roleValue, refreshToken, password: hashedPassword },
+        { new: true },
+        (err, data) => {
+          if (err) {
+            res.status(400).send(err);
+            next();
+          }
+          res.status(201).send(data);
         }
-        res.status(201).send(data);
-      }
-    );
+      );
+    }
   } else {
     user.findByIdAndUpdate(id, { ...body, role: roleValue }, { new: true }, (err, data) => {
       if (err) {
