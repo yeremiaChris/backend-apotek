@@ -79,7 +79,11 @@ module.exports.supplier_post = (req, res, next) => {
   };
   supplier.create(obj, (err, data) => {
     if (err) {
-      res.status(400).send(err);
+      if (11000 === err.code || 11001 === err.code) {
+        res.status(400).send({ err, message: "Supplier sudah tersedia." });
+      } else {
+        res.status(400).send(err);
+      }
       next();
     }
     res.status(201).send(data);
@@ -108,7 +112,11 @@ module.exports.supplier_put = (req, res, next) => {
 
   supplier.findByIdAndUpdate(id, !req.file ? obj2 : obj, { new: true }, (err, data) => {
     if (err) {
-      res.status(400).send(err);
+      if (11000 === err.code || 11001 === err.code) {
+        res.status(400).send({ err, message: "Supplier sudah tersedia." });
+      } else {
+        res.status(400).send(err);
+      }
       next();
     }
     res.status(201).send(data);

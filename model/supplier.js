@@ -7,6 +7,7 @@ const supplierSchema = new Schema(
     name: {
       type: String,
       required: [true, "Name field is required"],
+      unique: [true, "Title is available"],
     },
 
     image: {

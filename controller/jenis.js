@@ -3,7 +3,6 @@ const { jenis } = require("../model/jenis");
 module.exports.jenis_get = async (req, res, next) => {
   const limit = 5;
   const { page, query, sortBy } = req.query;
-  console.log(sortBy);
   try {
     const data = await jenis
       .find({
@@ -34,7 +33,6 @@ module.exports.jenis_get_selectData = (req, res, next) => {
         res.status(400).send(err);
         next();
       } else {
-        console.log(data);
         const datas = data.map((item) => {
           return {
             title: item.title,
@@ -54,7 +52,11 @@ module.exports.jenis_post = (req, res, next) => {
   console.log(req);
   jenis.create(body, (err, data) => {
     if (err) {
-      res.status(400).send(err);
+      if (11000 === err.code || 11001 === err.code) {
+        res.status(400).send({ err, message: "Jenis obat sudah tersedia." });
+      } else {
+        res.status(400).send(err);
+      }
       next();
     }
     res.status(201).send(data);
@@ -66,7 +68,11 @@ module.exports.jenis_put = (req, res, next) => {
   const { id } = req.params;
   jenis.findByIdAndUpdate(id, body, { new: true }, (err, data) => {
     if (err) {
-      res.status(400).send(err);
+      if (11000 === err.code || 11001 === err.code) {
+        res.status(400).send({ err, message: "Jenis obat sudah tersedia." });
+      } else {
+        res.status(400).send(err);
+      }
       next();
     }
     res.status(201).send(data);

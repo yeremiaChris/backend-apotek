@@ -95,7 +95,12 @@ module.exports.medicine_put = (req, res, next) => {
   const { id } = req.params;
   medicine.findByIdAndUpdate(id, body, { new: true }, (err, data) => {
     if (err) {
-      res.status(400).send(err);
+      if (11000 === err.code || 11001 === err.code) {
+        res.status(400).send({ err, message: "Obat sudah tersedia." });
+      } else {
+        res.status(400).send(err);
+      }
+
       next();
     }
     res.status(201).send(data);

@@ -3,7 +3,6 @@ const { satuan } = require("../model/satuan");
 module.exports.satuan_get = async (req, res, next) => {
   const limit = 5;
   const { page, query, sortBy } = req.query;
-  console.log(sortBy);
   try {
     const data = await satuan
       .find({
@@ -54,7 +53,11 @@ module.exports.satuan_post = (req, res, next) => {
   console.log(req);
   satuan.create(body, (err, data) => {
     if (err) {
-      res.status(400).send(err);
+      if (11000 === err.code || 11001 === err.code) {
+        res.status(400).send({ err, message: "Satuan obat sudah tersedia." });
+      } else {
+        res.status(400).send(err);
+      }
       next();
     }
     res.status(201).send(data);
@@ -66,7 +69,11 @@ module.exports.satuan_put = (req, res, next) => {
   const { id } = req.params;
   satuan.findByIdAndUpdate(id, body, { new: true }, (err, data) => {
     if (err) {
-      res.status(400).send(err);
+      if (11000 === err.code || 11001 === err.code) {
+        res.status(400).send({ err, message: "Satuan obat sudah tersedia." });
+      } else {
+        res.status(400).send(err);
+      }
       next();
     }
     res.status(201).send(data);

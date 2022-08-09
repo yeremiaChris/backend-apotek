@@ -7,6 +7,7 @@ const jenisSchema = new Schema(
     title: {
       type: String,
       required: [true, "Title field is required"],
+      unique: [true, "Title is available"],
     },
     description: {
       type: String,
