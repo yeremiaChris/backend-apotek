@@ -105,17 +105,12 @@ module.exports.register_put = async (req, res, next) => {
   const { body } = req;
   const { id } = req.params;
 
-  const { email, password } = body;
+  const { password } = body;
 
   // create user
   const roleValue = await role.findById(parseInt(body.role));
   if (password) {
     const refreshToken = jwt.sign(body, process.env.REFRESH_TOKEN_SECRET);
-
-    // checking if email exist
-    const isEmailExist = await user.findOne({ email });
-    if (isEmailExist) return res.status(400).send({ message: "Email is already exist." });
-
     // hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
