@@ -2,6 +2,51 @@ const { user } = require("../model/auth");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const generateAccessToken = require("../helper/generateAccessToken");
+const { role } = require("../model/role");
+
+module.exports.user_get = async (req, res, next) => {
+  const limit = 5;
+  const { page, query, sortBy } = req.query;
+  try {
+    const data = await user
+      .find({
+        $or: [{ name: { $regex: query || "" } }, { email: { $regex: query || "" } }],
+      })
+      .select(["-password", "-refreshToken"])
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .lean();
+
+    const count = await user.countDocuments();
+
+    res.json({
+      data,
+      pagination: {
+        page: !page ? 1 : parseInt(page),
+        totalPage: Math.ceil(count / limit),
+      },
+    });
+  } catch (error) {
+    next();
+  }
+};
+
+module.exports.user_delete = (req, res, next) => {
+  const { id } = req.params;
+  user.findById(id, (err, data) => {
+    if (err) {
+      res.status(400).send(err);
+      next();
+    } else if (data) {
+      data.remove(() => {
+        res.status(201).send(data);
+      });
+    } else {
+      res.status(400).send("Not found");
+      next();
+    }
+  });
+};
 
 module.exports.register_post = async (req, res, next) => {
   const { body } = req;
@@ -17,13 +62,92 @@ module.exports.register_post = async (req, res, next) => {
   const hashedPassword = await bcrypt.hash(password, salt);
 
   // create user
-  user.create({ ...body, refreshToken, password: hashedPassword }, (err, data) => {
+  const roleValue = await role.findById(parseInt(body.role));
+  user.create({ ...body, role: roleValue, refreshToken, password: hashedPassword }, (err, data) => {
     if (err) {
       res.status(400).send(err);
       next();
     }
     res.status(201).json(data);
   });
+};
+
+// module.exports.user_put = (req, res, next) => {
+//   const { body } = req;
+//   const { id } = req.params;
+//   user.findByIdAndUpdate(id, body, { new: true }, (err, data) => {
+//     if (err) {
+//       res.status(400).send(err);
+//       next();
+//     }
+//     res.status(201).send(data);
+//   });
+// };
+
+module.exports.user_get_detail = (req, res, next) => {
+  const { id } = req.params;
+  user
+    .findById(id, (err, data) => {
+      if (err) {
+        res.status(400).send(err);
+        next();
+      } else if (data) {
+        res.status(201).send(data);
+      } else {
+        res.status(400).send("Not found");
+        next();
+      }
+    })
+    .lean();
+};
+
+module.exports.register_put = async (req, res, next) => {
+  const { body } = req;
+  const { id } = req.params;
+
+  const { email, password } = body;
+
+  // create user
+  const roleValue = await role.findById(parseInt(body.role));
+  if (password) {
+    const refreshToken = jwt.sign(body, process.env.REFRESH_TOKEN_SECRET);
+
+    // checking if email exist
+    const isEmailExist = await user.findOne({ email });
+    if (isEmailExist) return res.status(400).send({ message: "Email is already exist." });
+
+    // hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    user.findByIdAndUpdate(
+      id,
+      { ...body, role: roleValue, refreshToken, password: hashedPassword },
+      { new: true },
+      (err, data) => {
+        if (err) {
+          res.status(400).send(err);
+          next();
+        }
+        res.status(201).send(data);
+      }
+    );
+  } else {
+    user.findByIdAndUpdate(id, { ...body, role: roleValue }, { new: true }, (err, data) => {
+      if (err) {
+        res.status(400).send(err);
+        next();
+      }
+      res.status(201).send(data);
+    });
+  }
+
+  // user.create({ ...body, role: roleValue, refreshToken, password: hashedPassword }, (err, data) => {
+  //   if (err) {
+  //     res.status(400).send(err);
+  //     next();
+  //   }
+  //   res.status(201).json(data);
+  // });
 };
 
 module.exports.login_post = async (req, res, next) => {

@@ -4,15 +4,10 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const medicineSchema = new Schema(
   {
-    kode: {
-      type: String,
-      min: 5,
-      max: 5,
-      // unique: true,
-    },
     name: {
       type: String,
-      required: [true, "Name field is required"],
+      required: true,
+      unique: [true, "Medicine is available"],
     },
     type: {
       type: String,

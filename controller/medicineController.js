@@ -1,5 +1,5 @@
 const { medicine } = require("../model/medicine");
-const Crypto = require("crypto");
+// const Crypto = require("crypto");
 
 module.exports.medicine_get = async (req, res, next) => {
   const limit = 5;
@@ -70,16 +70,20 @@ module.exports.medicine_get_selectData = (req, res, next) => {
     .lean();
 };
 
-function randomString(size = 5) {
-  return Crypto.randomBytes(size).toString("base64").slice(0, size);
-}
+// function randomString(size = 5) {
+//   return Crypto.randomBytes(size).toString("base64").slice(0, size);
+// }
 
 module.exports.medicine_post = (req, res, next) => {
   const { body } = req;
-  console.log(req);
-  medicine.create({ ...body, kode: randomString().toUpperCase() }, (err, data) => {
+  medicine.create(body, (err, data) => {
     if (err) {
-      res.status(400).send(err);
+      if (11000 === err.code || 11001 === err.code) {
+        res.status(400).send({ err, message: "Obat sudah tersedia." });
+      } else {
+        res.status(400).send(err);
+      }
+
       next();
     }
     res.status(201).send(data);

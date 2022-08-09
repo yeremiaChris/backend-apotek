@@ -7,6 +7,7 @@ const medicineRoute = require("./routes/medicine");
 const pembelianRoute = require("./routes/pembelian");
 const penjualanRoute = require("./routes/penjualan");
 const authRoute = require("./routes/auth");
+const roleRoute = require("./routes/role");
 const cors = require("cors");
 const authenticateUser = require("./helper/authenticateToken");
 
@@ -54,6 +55,7 @@ app.use(authenticateUser);
 // routing
 app.use("/api", infoRoute);
 app.use("/api/supplier", supplierRoute);
+app.use("/api/role", roleRoute);
 app.use("/api/medicine", medicineRoute);
 app.use("/api/pembelian", pembelianRoute);
 app.use("/api/penjualan", penjualanRoute);
