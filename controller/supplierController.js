@@ -9,14 +9,13 @@ module.exports.supplier_get = async (req, res, next) => {
   try {
     const data = await supplier
       .find({
-        name: {
-          $regex: !query ? "" : query,
-          $options: "i",
-        },
+        $or: [{ name: { $regex: query || "" } }],
+      })
+      .sort({
+        [sortBy]: 1,
       })
       .select("-image")
       .limit(limit)
-      .sort({ name: sortBy === "name" ? 1 : -1, updatedAt: sortBy === "newest" ? 1 : -1 })
       .skip((page - 1) * limit)
       .lean();
     const count = await supplier.countDocuments().lean();

@@ -15,10 +15,15 @@ module.exports.medicine_get = async (req, res, next) => {
     //   })
     const data = await medicine
       .find({
-        $or: [{ name: { $regex: query || "" } }, { kode: { $regex: query || "" } }],
+        $or: [
+          { name: { $regex: query || "" } },
+          { type: { $regex: query || "" } },
+          { unit: { $regex: query || "" } },
+        ],
       })
       .sort({
         [sortBy]: sortBy === "name" ? 1 : -1,
+        createdAt: -1,
       })
       .limit(limit)
       .skip((page - 1) * limit)

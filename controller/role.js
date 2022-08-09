@@ -6,7 +6,11 @@ module.exports.role_get = async (req, res, next) => {
   try {
     const data = await role
       .find({
-        $or: [{ title: { $regex: query || "" } }, { description: { $regex: query || "" } }],
+        $or: [{ roleName: { $regex: query || "" } }],
+      })
+      .sort({
+        [sortBy]: 1,
+        createdAt: -1,
       })
       .select(["-menus"])
       .limit(limit)

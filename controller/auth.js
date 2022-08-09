@@ -12,6 +12,9 @@ module.exports.user_get = async (req, res, next) => {
       .find({
         $or: [{ name: { $regex: query || "" } }, { email: { $regex: query || "" } }],
       })
+      .sort({
+        [sortBy]: 1,
+      })
       .select(["-password", "-refreshToken"])
       .limit(limit)
       .skip((page - 1) * limit)
