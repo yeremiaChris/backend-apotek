@@ -65,21 +65,19 @@ module.exports.register_post = async (req, res, next) => {
   const hashedPassword = await bcrypt.hash(password, salt);
 
   // create user
-  if (!body.role) {
-    res.status(400).send({ message: "Role field is required" });
-  } else {
-    const roleValue = await role.findById(parseInt(body.role));
-    user.create(
-      { ...body, role: roleValue, refreshToken, password: hashedPassword },
-      (err, data) => {
-        if (err) {
-          res.status(400).send(err);
-          next();
-        }
-        res.status(201).json(data);
+
+  const roleValue = await role.findById(parseInt(body.role));
+  user.create({ ...body, role: roleValue, refreshToken, password: hashedPassword }, (err, data) => {
+    if (err) {
+      if (11000 === err.code || 11001 === err.code) {
+        res.status(400).send({ err, message: "User sudah tersedia." });
+      } else {
+        res.status(400).send(err);
       }
-    );
-  }
+      next();
+    }
+    res.status(201).json(data);
+  });
 };
 
 // module.exports.user_put = (req, res, next) => {
@@ -144,7 +142,11 @@ module.exports.register_put = async (req, res, next) => {
   } else {
     user.findByIdAndUpdate(id, { ...body, role: roleValue }, { new: true }, (err, data) => {
       if (err) {
-        res.status(400).send(err);
+        if (11000 === err.code || 11001 === err.code) {
+          res.status(400).send({ err, message: "User sudah tersedia." });
+        } else {
+          res.status(400).send(err);
+        }
         next();
       }
       res.status(201).send(data);
