@@ -1,18 +1,17 @@
 const { medicine } = require("../model/medicine");
-// const Crypto = require("crypto");
+const Crypto = require("crypto");
 
 module.exports.medicine_get = async (req, res, next) => {
   const limit = 5;
   const { page, query, sortBy } = req.query;
 
   try {
-    // const data = await medicine
-    //   .find({
-    //     name: {
-    //       $regex: !query ? "" : query,
-    //       $options: "i",
-    //     },
-    //   })
+    // const data = await medicine.find({
+    //   name: {
+    //     $regex: !query ? "" : query,
+    //     $options: "i",
+    //   },
+    // });
     const data = await medicine
       .find({
         $or: [
@@ -75,13 +74,13 @@ module.exports.medicine_get_selectData = (req, res, next) => {
     .lean();
 };
 
-// function randomString(size = 5) {
-//   return Crypto.randomBytes(size).toString("base64").slice(0, size);
-// }
+function randomString(size = 5) {
+  return Crypto.randomBytes(size).toString("base64").slice(0, size);
+}
 
 module.exports.medicine_post = (req, res, next) => {
   const { body } = req;
-  medicine.create(body, (err, data) => {
+  medicine.create({ ...body, kode: randomString() }, (err, data) => {
     if (err) {
       if (11000 === err.code || 11001 === err.code) {
         res.status(400).send({ err, message: "Obat sudah tersedia." });
