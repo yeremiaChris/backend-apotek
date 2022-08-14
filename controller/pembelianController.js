@@ -1,14 +1,24 @@
 const pembelian = require("../model/pembelian");
 const { medicine } = require("../model/medicine");
+const dayjs = require("dayjs");
 
 module.exports.pembelian_get = async (req, res, next) => {
   const limit = 5;
-  const { page, query, sortBy } = req.query;
-
+  const { page, query, sortBy, startDate, endDate } = req.query;
+  console.log(query);
   try {
-    let data = await pembelian
+    const data = await pembelian
       .find({
-        $or: [{ title: { $regex: query || "" } }],
+        $or: [
+          { name: { $regex: query || "" } },
+          { type: { $regex: query || "" } },
+          { unit: { $regex: query || "" } },
+          { "supplier.title": { $regex: query || "" } },
+        ],
+        createdAt: {
+          $gte: !startDate ? dayjs().subtract(1, "year") : new Date(startDate),
+          $lte: !endDate ? dayjs() : new Date(endDate),
+        },
       })
       .sort({
         [sortBy]: 1,

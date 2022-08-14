@@ -1,17 +1,12 @@
 const { medicine } = require("../model/medicine");
 const Crypto = require("crypto");
+const dayjs = require("dayjs");
 
 module.exports.medicine_get = async (req, res, next) => {
   const limit = 5;
-  const { page, query, sortBy } = req.query;
+  const { page, query, sortBy, startDate, endDate } = req.query;
 
   try {
-    // const data = await medicine.find({
-    //   name: {
-    //     $regex: !query ? "" : query,
-    //     $options: "i",
-    //   },
-    // });
     const data = await medicine
       .find({
         $or: [
@@ -19,6 +14,10 @@ module.exports.medicine_get = async (req, res, next) => {
           { type: { $regex: query || "" } },
           { unit: { $regex: query || "" } },
         ],
+        createdAt: {
+          $gte: !startDate ? dayjs().subtract(1, "year") : new Date(startDate),
+          $lte: !endDate ? dayjs() : new Date(endDate),
+        },
       })
       .sort({
         [sortBy]: sortBy === "name" ? 1 : -1,
