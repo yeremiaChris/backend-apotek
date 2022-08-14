@@ -12,6 +12,9 @@ const pembelianSchema = new Schema(
     total: {
       type: Number,
     },
+    supplier: {
+      type: Object,
+    },
   },
   { timestamps: true }
 );

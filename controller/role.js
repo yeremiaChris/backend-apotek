@@ -33,7 +33,7 @@ module.exports.role_get = async (req, res, next) => {
 
 module.exports.role_post = (req, res, next) => {
   const { body } = req;
-  console.log(req);
+  console.log(body);
   role.create(body, (err, data) => {
     if (err) {
       res.status(400).send(err);
@@ -46,6 +46,7 @@ module.exports.role_post = (req, res, next) => {
 module.exports.role_put = (req, res, next) => {
   const { body } = req;
   const { id } = req.params;
+  console.log(body);
   role.findByIdAndUpdate(id, body, { new: true }, (err, data) => {
     if (err) {
       res.status(400).send(err);

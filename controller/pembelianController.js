@@ -6,7 +6,7 @@ module.exports.pembelian_get = async (req, res, next) => {
   const { page, query, sortBy } = req.query;
 
   try {
-    const data = await pembelian
+    let data = await pembelian
       .find({
         $or: [{ title: { $regex: query || "" } }],
       })
@@ -19,7 +19,6 @@ module.exports.pembelian_get = async (req, res, next) => {
       .lean();
 
     const count = await pembelian.countDocuments().lean();
-
     res.json({
       data,
       pagination: {
@@ -58,7 +57,8 @@ module.exports.pembelian_post = (req, res, next) => {
   );
 
   // buat laporan pembelian
-  const { name, type, unit, purchasePrice, sellingPrice, supply, jumlahBeli, total } = body;
+  const { name, type, unit, purchasePrice, sellingPrice, supply, jumlahBeli, supplier, total } =
+    body;
   const data = {
     name,
     type,
@@ -68,6 +68,7 @@ module.exports.pembelian_post = (req, res, next) => {
     supply,
     jumlahBeli,
     total,
+    supplier,
   };
   pembelian.create(data, (err, data) => {
     if (err) {

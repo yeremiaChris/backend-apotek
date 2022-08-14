@@ -174,9 +174,9 @@ module.exports.login_post = async (req, res, next) => {
 
   // create and sign a token
   const token = generateAccessToken({ name: user.name });
-
+  const roleValue = await role.findById(parseInt(isUser.role._id));
   // set authorization
-  res.json({ message: "success", data: isUser, token });
+  res.json({ message: "success", data: { ...isUser, role: roleValue }, token });
 };
 
 module.exports.token_post = async (req, res, next) => {
