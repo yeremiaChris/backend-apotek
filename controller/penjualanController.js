@@ -3,14 +3,18 @@ const { medicine } = require("../model/medicine");
 const dayjs = require("dayjs");
 module.exports.penjualan_get = async (req, res, next) => {
   const limit = 5;
-  const { page, query } = req.query;
-  console.log(query);
+  const { page, query, startDate, endDate } = req.query;
   try {
     const data = await penjualan
       .find({
-        title: {
-          $regex: !query ? "" : query,
-          $options: "i",
+        $or: [
+          { name: { $regex: query || "" } },
+          { type: { $regex: query || "" } },
+          { unit: { $regex: query || "" } },
+        ],
+        createdAt: {
+          $gte: !startDate ? dayjs().subtract(1, "year") : new Date(startDate),
+          $lte: !endDate ? dayjs() : new Date(endDate),
         },
       })
       .limit(limit)
@@ -44,30 +48,17 @@ module.exports.penjualan_print_get = async (req, res, next) => {
 module.exports.penjualan_post = (req, res, next) => {
   const { body } = req;
   medicine.findByIdAndUpdate(
-    { _id: data.laporan[index]._id },
-    { $inc: { supply: -parseInt(data.laporan[index].jumlahBeli) } },
-    { new: true },
+    { _id: body._id },
+    { $inc: { supply: -parseInt(body.jumlahBeli) } },
     (err1, data1) => {
-      if (err) {
-        console.log(err1);
+      if (err1) {
       }
-      console.log(data1);
     }
   );
 
   // buat laporan pembelian
-  const {
-    isRecipi,
-    recepiData,
-    name,
-    type,
-    unit,
-    purchasePrice,
-    sellingPrice,
-    supply,
-    jumlahBeli,
-    total,
-  } = body;
+  const { recepiData, name, type, unit, purchasePrice, sellingPrice, supply, jumlahBeli, total } =
+    body;
   const data = {
     name,
     type,
@@ -77,7 +68,6 @@ module.exports.penjualan_post = (req, res, next) => {
     supply,
     jumlahBeli,
     total,
-    isRecipi,
     recepiData,
   };
   penjualan.create(data, (err, data) => {

@@ -11,9 +11,6 @@ const penjualanSchema = new Schema(
     jumlahBeli: {
       type: Number,
     },
-    isRecipi: {
-      type: Boolean,
-    },
     recepiData: {
       type: Object,
     },

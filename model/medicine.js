@@ -8,6 +8,32 @@ const medicineObjSchema = {
   name: {
     type: String,
     required: true,
+  },
+  type: {
+    type: String,
+    required: [true, "Type field is required"],
+  },
+  unit: {
+    type: String,
+    required: [true, "Unit field is required"],
+  },
+  purchasePrice: {
+    type: Number,
+    required: [true, "Price field is required"],
+  },
+  sellingPrice: {
+    type: Number,
+    required: [true, "Price field is required"],
+  },
+  supply: {
+    type: Number,
+    required: [true, "Supply field is required"],
+  },
+};
+const medicineObjSchema2 = {
+  name: {
+    type: String,
+    required: true,
     unique: [true, "Medicine is available"],
   },
   type: {
@@ -35,7 +61,7 @@ const medicineObjSchema = {
 // create schema
 const medicineSchema = new Schema(
   {
-    ...medicineObjSchema,
+    ...medicineObjSchema2,
   },
   { timestamps: true }
 );
