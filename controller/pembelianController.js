@@ -43,32 +43,41 @@ module.exports.pembelian_print_get = async (req, res, next) => {
 
 module.exports.pembelian_post = (req, res, next) => {
   const { body } = req;
+  //  update data obat persediaan bertambah
   console.log(body);
-  pembelian.create(body, (err, data) => {
+  medicine.findByIdAndUpdate(
+    { _id: body._id },
+    { $inc: { supply: parseInt(body.jumlahBeli) } },
+    { new: true },
+    (err1, data1) => {
+      if (err1) {
+        console.log(err1);
+      }
+      console.log(data1);
+    }
+  );
+
+  // buat laporan pembelian
+  const { name, type, unit, purchasePrice, sellingPrice, supply, jumlahBeli, total } = body;
+  const data = {
+    name,
+    type,
+    unit,
+    purchasePrice,
+    sellingPrice,
+    supply,
+    jumlahBeli,
+    total,
+  };
+  pembelian.create(data, (err, data) => {
     if (err) {
       res.status(400).send(err);
       next();
     }
     res.status(201).send(data);
     console.log(data);
-    const id = data._id;
 
     // const item = Meme.findOne(query);
-
-    // add supply for transaction
-    for (let index = 0; index < data.laporan.length; index++) {
-      medicine.findByIdAndUpdate(
-        { _id: data.laporan[index]._id },
-        { $inc: { supply: parseInt(data.laporan[index].jumlahBeli) } },
-        { new: true },
-        (err1, data1) => {
-          if (err) {
-            console.log(err1);
-          }
-          console.log(data1);
-        }
-      );
-    }
   });
 };
 
