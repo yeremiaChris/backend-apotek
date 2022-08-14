@@ -53,7 +53,6 @@ module.exports.pembelian_print_get = async (req, res, next) => {
 module.exports.pembelian_post = (req, res, next) => {
   const { body } = req;
   //  update data obat persediaan bertambah
-  console.log(body);
   medicine.findByIdAndUpdate(
     { _id: body._id },
     { $inc: { supply: parseInt(body.jumlahBeli) } },
@@ -87,8 +86,6 @@ module.exports.pembelian_post = (req, res, next) => {
     }
     res.status(201).send(data);
     console.log(data);
-
-    // const item = Meme.findOne(query);
   });
 };
 

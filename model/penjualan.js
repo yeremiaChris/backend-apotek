@@ -2,21 +2,22 @@ const mongoose = require("mongoose");
 // const { supplierSchema } = require("./supplierModel");
 // const { medicineSchema } = require("./medicineModel");
 const autoIncrement = require("mongoose-auto-increment");
+const { medicineObjSchema } = require("./medicine");
 
 const Schema = mongoose.Schema;
 const penjualanSchema = new Schema(
   {
-    laporan: [{}],
-    title: {
-      type: String,
-    },
-    uangBayar: {
+    ...medicineObjSchema,
+    jumlahBeli: {
       type: Number,
+    },
+    isRecipi: {
+      type: Boolean,
+    },
+    recepiData: {
+      type: Object,
     },
     total: {
-      type: Number,
-    },
-    kembalian: {
       type: Number,
     },
   },

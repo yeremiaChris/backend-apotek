@@ -43,32 +43,50 @@ module.exports.penjualan_print_get = async (req, res, next) => {
 
 module.exports.penjualan_post = (req, res, next) => {
   const { body } = req;
-  console.log(body);
-  penjualan.create(body, (err, data) => {
+  medicine.findByIdAndUpdate(
+    { _id: data.laporan[index]._id },
+    { $inc: { supply: -parseInt(data.laporan[index].jumlahBeli) } },
+    { new: true },
+    (err1, data1) => {
+      if (err) {
+        console.log(err1);
+      }
+      console.log(data1);
+    }
+  );
+
+  // buat laporan pembelian
+  const {
+    isRecipi,
+    recepiData,
+    name,
+    type,
+    unit,
+    purchasePrice,
+    sellingPrice,
+    supply,
+    jumlahBeli,
+    total,
+  } = body;
+  const data = {
+    name,
+    type,
+    unit,
+    purchasePrice,
+    sellingPrice,
+    supply,
+    jumlahBeli,
+    total,
+    isRecipi,
+    recepiData,
+  };
+  penjualan.create(data, (err, data) => {
     if (err) {
       res.status(400).send(err);
       next();
     }
     res.status(201).send(data);
     console.log(data);
-    const id = data._id;
-
-    // const item = Meme.findOne(query);
-
-    // add supply for transaction
-    for (let index = 0; index < data.laporan.length; index++) {
-      medicine.findByIdAndUpdate(
-        { _id: data.laporan[index]._id },
-        { $inc: { supply: -parseInt(data.laporan[index].jumlahBeli) } },
-        { new: true },
-        (err1, data1) => {
-          if (err) {
-            console.log(err1);
-          }
-          console.log(data1);
-        }
-      );
-    }
   });
 };
 
