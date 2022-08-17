@@ -7,6 +7,19 @@ module.exports.medicine_get = async (req, res, next) => {
   const { page, query, sortBy, startDate, endDate } = req.query;
 
   try {
+    const total = await medicine
+      .find({
+        $or: [
+          { name: { $regex: query || "" } },
+          { type: { $regex: query || "" } },
+          { unit: { $regex: query || "" } },
+        ],
+        createdAt: {
+          $gte: !startDate ? dayjs().subtract(1, "year") : new Date(startDate),
+          $lte: !endDate ? dayjs() : new Date(endDate),
+        },
+      })
+      .sort(sortBy || "-createdAt");
     const data = await medicine
       .find({
         $or: [
@@ -28,6 +41,7 @@ module.exports.medicine_get = async (req, res, next) => {
 
     res.json({
       data,
+      totalPersediaan: total.reduce((a, c) => a + c.supply, 0),
       pagination: {
         page: !page ? 1 : parseInt(page),
         totalPage: Math.ceil(count / limit),

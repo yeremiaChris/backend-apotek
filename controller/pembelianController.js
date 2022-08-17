@@ -5,8 +5,22 @@ const dayjs = require("dayjs");
 module.exports.pembelian_get = async (req, res, next) => {
   const limit = 5;
   const { page, query, sortBy, startDate, endDate } = req.query;
-  console.log(query);
   try {
+    const total = await pembelian
+      .find({
+        $or: [
+          { name: { $regex: query || "" } },
+          { type: { $regex: query || "" } },
+          { unit: { $regex: query || "" } },
+          { "supplier.title": { $regex: query || "" } },
+        ],
+        createdAt: {
+          $gte: !startDate ? dayjs().subtract(1, "year") : new Date(startDate),
+          $lte: !endDate ? dayjs() : new Date(endDate),
+        },
+      })
+      .sort(sortBy || "-createdAt");
+
     const data = await pembelian
       .find({
         $or: [
@@ -20,10 +34,7 @@ module.exports.pembelian_get = async (req, res, next) => {
           $lte: !endDate ? dayjs() : new Date(endDate),
         },
       })
-      .sort({
-        [sortBy]: 1,
-        createdAt: -1,
-      })
+      .sort(sortBy || "-createdAt")
       .limit(limit)
       .skip((page - 1) * limit)
       .lean();
@@ -31,6 +42,8 @@ module.exports.pembelian_get = async (req, res, next) => {
     const count = await pembelian.countDocuments().lean();
     res.json({
       data,
+      totalPembelian: total.reduce((a, c) => a + c.total, 0),
+      totalJumlahBeli: total.reduce((a, c) => a + c.jumlahBeli, 0),
       pagination: {
         page: !page ? 1 : parseInt(page),
         totalPage: Math.ceil(count / limit),

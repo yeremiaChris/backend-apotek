@@ -3,8 +3,22 @@ const { medicine } = require("../model/medicine");
 const dayjs = require("dayjs");
 module.exports.penjualan_get = async (req, res, next) => {
   const limit = 5;
-  const { page, query, startDate, endDate } = req.query;
+  const { page, query, startDate, endDate, sortBy } = req.query;
   try {
+    const total = await penjualan
+      .find({
+        $or: [
+          { name: { $regex: query || "" } },
+          { type: { $regex: query || "" } },
+          { unit: { $regex: query || "" } },
+        ],
+        createdAt: {
+          $gte: !startDate ? dayjs().subtract(1, "year") : new Date(startDate),
+          $lte: !endDate ? dayjs() : new Date(endDate),
+        },
+      })
+      .sort(sortBy || "-createdAt");
+
     const data = await penjualan
       .find({
         $or: [
@@ -17,6 +31,7 @@ module.exports.penjualan_get = async (req, res, next) => {
           $lte: !endDate ? dayjs() : new Date(endDate),
         },
       })
+      .sort(sortBy || "-createdAt")
       .limit(limit)
       .skip((page - 1) * limit)
       .sort({ createdAt: -1 })
@@ -26,6 +41,8 @@ module.exports.penjualan_get = async (req, res, next) => {
 
     res.json({
       data,
+      totalPenjualan: total.reduce((a, c) => a + c.total, 0),
+      totalJumlahBeli: total.reduce((a, c) => a + c.jumlahBeli, 0),
       pagination: {
         page: !page ? 1 : parseInt(page),
         totalPage: Math.ceil(count / limit),
