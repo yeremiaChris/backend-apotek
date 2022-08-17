@@ -8,10 +8,7 @@ module.exports.satuan_get = async (req, res, next) => {
       .find({
         $or: [{ title: { $regex: query || "" } }, { description: { $regex: query || "" } }],
       })
-      .sort({
-        [sortBy]: 1,
-        createdAt: -1,
-      })
+      .sort(sortBy || "-createdAt")
       .limit(limit)
       .skip((page - 1) * limit)
       .lean();

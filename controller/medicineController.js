@@ -19,10 +19,7 @@ module.exports.medicine_get = async (req, res, next) => {
           $lte: !endDate ? dayjs() : new Date(endDate),
         },
       })
-      .sort({
-        [sortBy]: sortBy === "name" ? 1 : -1,
-        createdAt: -1,
-      })
+      .sort(sortBy || "-createdAt")
       .limit(limit)
       .skip((page - 1) * limit)
       .lean();

@@ -8,10 +8,7 @@ module.exports.role_get = async (req, res, next) => {
       .find({
         $or: [{ roleName: { $regex: query || "" } }],
       })
-      .sort({
-        [sortBy]: 1,
-        createdAt: -1,
-      })
+      .sort(sortBy || "-createdAt")
       .select(["-menus"])
       .limit(limit)
       .skip((page - 1) * limit)

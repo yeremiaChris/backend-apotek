@@ -11,9 +11,7 @@ module.exports.supplier_get = async (req, res, next) => {
       .find({
         $or: [{ name: { $regex: query || "" } }],
       })
-      .sort({
-        [sortBy]: 1,
-      })
+      .sort(sortBy || "-createdAt")
       .select("-image")
       .limit(limit)
       .skip((page - 1) * limit)
