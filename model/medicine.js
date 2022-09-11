@@ -34,6 +34,10 @@ const medicineObjSchema2 = {
   name: {
     type: String,
     required: true,
+  },
+  expiredAt: {
+    type: Date,
+    required: true,
     unique: [true, "Medicine is available"],
   },
   type: {
@@ -65,7 +69,7 @@ const medicineSchema = new Schema(
   },
   { timestamps: true }
 );
-// autoIncrement.initialize(mongoose.connection);
+// autoIncrement.initiali e(mongoose.connection);
 // medicineSchema.plugin(autoIncrement.plugin, "medicine");
 const medicine = mongoose.model("medicine", medicineSchema);
 module.exports = { medicine, medicineSchema, medicineObjSchema };

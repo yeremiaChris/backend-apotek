@@ -75,6 +75,7 @@ module.exports.medicine_get_selectData = (req, res, next) => {
             _id: item._id,
             price: item.price,
             supply: item.supply,
+            expiredAt: item.expiredAt,
           };
         });
         res.status(201).send(datas);
